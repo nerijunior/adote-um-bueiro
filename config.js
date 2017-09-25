@@ -1,4 +1,4 @@
 module.exports = {
-  secret: 'thisisasampleapi',
-  db: 'mongodb://localhost/api'
+  secret: 'adopt-a-manhole',
+  db: 'mongodb://localhost/adopt-a-manhole'
 }
