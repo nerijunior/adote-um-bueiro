@@ -81,7 +81,7 @@ export default {
     create () {
       // User logged?
       if (!this.loggedUser._id) {
-        return
+        return this.$router.push('/signin')
       }
 
       this.$emit('new-manhole')
