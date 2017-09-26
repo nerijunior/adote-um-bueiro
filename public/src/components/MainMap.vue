@@ -11,7 +11,7 @@
       :center="map.center"
       :zoom="map.zoom"
       map-type-id="roadmap"
-      style="width: 100%; height: 700px"
+      style="width: 100%; height: 100%;"
       @dragend="dragend"
       @center_changed="updatedCenter"
       @rightclick="rightClick"

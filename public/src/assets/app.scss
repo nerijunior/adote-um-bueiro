@@ -2,3 +2,8 @@ $fa-font-path: '~font-awesome/fonts';
 @import '~font-awesome/scss/font-awesome';
 
 @import '~bulma/bulma';
+
+body, html, #app {
+  height: 100%;
+  width: 100%;
+}
