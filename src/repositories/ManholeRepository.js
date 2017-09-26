@@ -51,6 +51,10 @@ class ManholeRepository {
 
     return manhole
   }
+
+  async getAdopted () {
+    return Manhole.find({ adopted: true }).exec()
+  }
 }
 
 module.exports = new ManholeRepository
