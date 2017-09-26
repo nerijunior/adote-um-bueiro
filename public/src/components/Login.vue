@@ -61,8 +61,8 @@ export default {
   name: 'hello',
   data () {
     return {
-      email: 'user@api.com',
-      password: '123qwe',
+      email: '',
+      password: '',
       social: {
         google: false,
         twitter: false,
