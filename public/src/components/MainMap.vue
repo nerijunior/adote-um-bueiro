@@ -1,5 +1,5 @@
 <template>
-  <div id="">
+  <div id="mainmap">
     <tool-bar
       @updatedManhole="updatedManhole"
       @new-manhole="creating = true"
@@ -188,4 +188,7 @@ export default {
 </script>
 
 <style scoped>
+#mainmap{
+  height: 100%;
+}
 </style>
