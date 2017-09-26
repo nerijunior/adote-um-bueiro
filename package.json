@@ -3,8 +3,11 @@
   "version": "1.0.0",
   "description": "Sample API",
   "main": "src/server.js",
+  "engines": {
+    "node": "8.5.0"
+  },
   "scripts": {
-    "postinstall": "cd public && npm install && npm run build"
+    "postinstall": "cd public && yarn && yarn build"
   },
   "dependencies": {
     "bcrypt": "^1.0.3",
