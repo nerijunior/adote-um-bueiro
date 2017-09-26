@@ -3,13 +3,14 @@ require('dotenv').config({ path: path.dirname(__dirname) + '/.env' })
 
 const moment = require('moment')
 const db = require('./core/db')
-const ManholeRepository = require('./repositories/ManholeRepository')
 const Manhole = require('./schemas/Manhole')
 const mailgun = require('mailgun.js')
 const mg = mailgun.client({
   username: 'api',
   key: process.env.MAILGUN_KEY,
 })
+
+const ManholeRepository = require('./repositories/ManholeRepository')
 
 const DAYS_INTERVAL = process.env.MAIL_ALERT_INTERVAL || 30
 
@@ -59,7 +60,7 @@ ManholeRepository.getAdopted()
         let lastAlert = moment(manhole.last_alert)
 
         if (lastAlert >= tenDaysAgo) {
-          return console.log('not send')
+          return
         }
       }
 
