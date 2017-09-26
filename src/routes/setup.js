@@ -13,7 +13,7 @@ module.exports = function (req, res) {
     const m = new Manhole()
     m.name = casual.company_name
     m.location = [getRandom(-25.42, -25.45), getRandom(-49.045, -49.089)]
-    m.adopted = (getRandom(-1,1) > 0)
+    m.adopted = false
     m.save()
   }
 

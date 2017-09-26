@@ -7,6 +7,8 @@ const morgan = require('morgan')
 const cors = require('cors')
 const bodyParser = require('body-parser')
 
+require('dotenv').config({ path: path.dirname(__dirname) + '/.env' })
+
 const config = require('../config')
 const db = require('./core/db')
 

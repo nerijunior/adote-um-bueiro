@@ -11,8 +11,12 @@ module.exports = function (express) {
   express.post('/api/points', authenticated, require('./points'))
   express.get('/api/me', authenticated, MeController.see)
   express.put('/api/me', authenticated, MeController.update)
-  express.get('/api/setup', authenticated, require('./setup'))
+
+  if (!process.env.NODE_ENV || process.env.NODE_ENV === 'development') {
+    express.get('/api/setup', require('./setup'))
+  }
 
   express.post('/api/manhole/:id/abandon', authenticated, ManholeController.abandon)
   express.post('/api/manhole/:id/adopt', authenticated, ManholeController.adopt)
+  express.post('/api/manhole/', authenticated, ManholeController.create)
 }

@@ -1,6 +1,10 @@
 <template>
   <div id="">
-    <tool-bar @updatedManhole="updatedManhole" :manhole="selectedManhole"></tool-bar>
+    <tool-bar
+      @updatedManhole="updatedManhole"
+      @new-manhole="creating = true"
+      :manhole="selectedManhole">
+    </tool-bar>
     <user-toolbar></user-toolbar>
 
     <gmap-map
@@ -8,6 +12,7 @@
       :zoom="map.zoom"
       map-type-id="roadmap"
       style="width: 100%; height: 700px"
+      @dragend="dragend"
       @center_changed="updatedCenter"
       @rightclick="rightClick"
     >
@@ -28,17 +33,25 @@
         @click="showMarkerInfo(m, index)"
       ></gmap-marker>
     </gmap-map>
+
+    <create-modal v-if="creating" @close="creating = false" @created="createdManhole">
+      <div slot="body">
+        <form @submit.prevent="newManhole"></form>
+      </div>
+    </create-modal>
   </div>
 </template>
 
 <script>
 import { debounce, extend } from 'lodash'
 
+import CreateModal from '@/components/CreateModal'
 import ToolBar from '@/components/ToolBar'
 import UserToolbar from '@/components/UserToolbar'
 
 export default {
   components: {
+    CreateModal,
     ToolBar,
     UserToolbar
   },
@@ -46,6 +59,7 @@ export default {
     return {
       selectedManhole: {},
       selectedMarker: null,
+      creating: false,
       map: {
         infoOptions: {
           pixelOffset: {
@@ -73,11 +87,17 @@ export default {
       this.map.center.lat = this.$store.state.lat
       this.map.center.lng = this.$store.state.lng
     },
-    updatedCenter: debounce(function (center) {
-      const lat = center.lat()
-      const lng = center.lng()
+    dragend () {
+      const lat = this.map.center.lat
+      const lng = this.map.center.lng
 
       this.fetchManholes(lat, lng)
+    },
+    updatedCenter: debounce(function (center) {
+      this.map.center = {
+        lat: center.lat(),
+        lng: center.lng()
+      }
     }, 300),
     fetchManholes (lat, lng) {
       window.axios.post('/points/', {lat: lat, lng: lng})
@@ -92,18 +112,21 @@ export default {
               return
             }
 
-            this.map.markers.push({
-              _id: point._id,
-              name: point.name,
-              adopted: point.adopted,
-              user_id: point.user_id,
-              position: {lat: point.location[0], lng: point.location[1]}
-            })
+            this.addMarker(point)
           })
         })
         .catch(error => {
           console.error(error)
         })
+    },
+    addMarker (manhole) {
+      this.map.markers.push({
+        _id: manhole._id,
+        name: manhole.name,
+        adopted: manhole.adopted,
+        user_id: manhole.user_id,
+        position: {lat: manhole.location[0], lng: manhole.location[1]}
+      })
     },
     rightClick (e) {
       console.log(e.latLng.lat(), e.latLng.lng())
@@ -137,6 +160,9 @@ export default {
           lng: manhole.location[1]
         }
       }))
+    },
+    createdManhole (manhole) {
+      this.addMarker(manhole)
     }
   },
   mounted () {
@@ -153,6 +179,8 @@ export default {
 
       this.map.zoom = 14
       this.loadCenter()
+      this.fetchManholes(data.lat, data.lng)
+
       console.log('accuracy', location.coords.accuracy)
     })
   }

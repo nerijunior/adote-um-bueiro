@@ -1,13 +1,16 @@
 <template>
   <div id="toolbar">
     <div class="field">
-      <button @click="criar" class="button is-fullwidth is-info"><i class="fa fa-plus-circle"></i> Criar</button>
+      <button @click="create" class="button is-fullwidth is-info">
+        <span class="icon"><i class="fa fa-plus-circle"></i> </span>
+        <span>Criar</span>
+      </button>
     </div>
 
     <div v-if="manhole._id">
       <div class="field">
         <button @click="adotar" v-if="!manhole.adopted" class="button is-fullwidth is-primary"><i class="fa fa-rocket"></i> Adotar</button>
-        <button @click="abandonar" v-if="manhole.adopted && loggedUser._id && manhole.user_id === loggedUser._id" class="button is-fullwidth is-danger"><i class="fa fa-sign-out"></i> Abandonar</button>
+        <button @click="abandon" v-if="manhole.adopted && loggedUser._id && manhole.user_id === loggedUser._id" class="button is-fullwidth is-danger"><i class="fa fa-sign-out"></i> Abandonar</button>
       </div>
       <div class="field">
         <button @click="alertar" :disabled="!loggedUser._id || manhole.user_id === loggedUser._id" v-if="manhole.adopted" class="button is-fullwidth is-warning"><i class="fa fa-warning"></i> Alertar Dono</button>
@@ -55,18 +58,33 @@ export default {
           }
         })
     },
-    abandonar () {
+    abandon () {
       // user is the owner?
+      if (this.manhole.user_id !== this.loggedUser._id) {
+        return
+      }
+
       // remove user_id
+      const id = this.manhole._id
+      window.axios.post(`/manhole/${id}/abandon`)
+        .then(response => {
+          this.$emit('updatedManhole', response.data)
+        })
+        .catch(error => {
+          console.error(error)
+        })
     },
     alertar () {
       // last update more than a week?
       // send alert
     },
-    criar () {
+    create () {
       // User logged?
-      // How many manholes current user has?
-      // show form
+      if (!this.loggedUser._id) {
+        return
+      }
+
+      this.$emit('new-manhole')
     }
   }
 }

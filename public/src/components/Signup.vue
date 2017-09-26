@@ -3,12 +3,12 @@
     <section class="hero">
       <div class="hero-body">
         <h1 class="title">Registrar</h1>
-        <h2 class="subtitle">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusantium tenetur unde, optio dignissimos, laboriosam vel sit, nulla repudiandae voluptates quas magni eveniet dicta inventore laborum hic atque! Harum tempora, iste.</h2>
+        <h2 class="subtitle">Crie sua conta e ajude a melhorar sua cidade! :)</h2>
       </div>
     </section>
     <div class="columns">
       <div class="column is-half is-offset-one-quarter">
-        <form @submit.prevet="save">
+        <form @submit.prevent="save">
           <div v-if="errors.length" class="notification is-danger">
             <ul>
               <li v-for="error in errors"><small>{{ error.field }}</small> {{ error.message }}</li>
@@ -97,6 +97,8 @@ export default {
           const token = response.data.token
 
           window.localStorage.setItem('token', token)
+          window.axios.defaults.headers.common['Authorization'] = 'Bearer ' + token
+
           this.$store.commit('SET_USER', user)
           this.$router.push('/')
         })

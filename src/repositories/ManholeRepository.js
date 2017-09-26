@@ -22,7 +22,8 @@ class ManholeRepository {
     try {
       const manhole = await Manhole.findOne({ _id: id })
 
-      if (manhole.adopted && manhole.user_id == user._id) {
+      if (manhole.adopted && user._id.equals(manhole.user_id)) {
+        console.log('removendo')
         manhole.adopted = false
         manhole.user_id = null
         manhole.save()
@@ -33,7 +34,22 @@ class ManholeRepository {
       console.log(e)
       throw e
     }
+  }
 
+  async save (data) {
+    let manhole = new Manhole()
+
+    if (data._id) {
+      manhole = await Manhole.find({ _id : data._id }).exec()
+    }
+
+    Object.keys(data).map(key => {
+      manhole[key] = data[key]
+    })
+
+    manhole.save()
+
+    return manhole
   }
 }
 
