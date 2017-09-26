@@ -9,3 +9,9 @@ yarn
 cd public && yarn && yarn build
 node server.js
 ```
+
+## Send alerts
+
+Alerts are sent every 30 days after the adoption of a manhole, you can change the param `MAIL_ALERT_INTERVAL` at `.env` file.
+
+`node src/cron.js`
