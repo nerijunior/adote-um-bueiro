@@ -24,6 +24,7 @@
     "mongoose": "^4.11.12",
     "mongoose-hidden": "^1.4.2",
     "morgan": "^1.8.2",
+    "pug": "^2.0.0-rc.4",
     "socket.io": "^2.0.3"
   }
 }

@@ -1,4 +1,5 @@
 const Manhole = require('../schemas/Manhole')
+const User = require('../schemas/User')
 
 class ManholeRepository {
   async adopt (id, user) {
@@ -53,7 +54,20 @@ class ManholeRepository {
   }
 
   async getAdopted () {
-    return Manhole.find({ adopted: true }).exec()
+    const manholes = await Manhole.find({ adopted: true }).exec()
+
+    const usersIds = manholes.map(manhole => {
+      return manhole.user_id
+    })
+    const users = await User.find({ _id : { $in: usersIds } })
+
+    return manholes.map((manhole) => {
+      manhole.user = users.find((user) => {
+        return user._id.equals(manhole.user_id)
+      })
+
+      return manhole
+    })
   }
 }
 

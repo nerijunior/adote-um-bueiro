@@ -1,5 +1,6 @@
 const path = require('path')
 const moment = require('moment')
+const pug = require('pug')
 
 require('dotenv').config({ path: path.dirname(__dirname) + '/.env' })
 
@@ -14,13 +15,17 @@ const Manhole = require('./schemas/Manhole')
 const ManholeRepository = require('./repositories/ManholeRepository')
 const DAYS_INTERVAL = process.env.MAIL_ALERT_INTERVAL || 30
 
+
 function sendAlert(manhole) {
+  let template = pug.compileFile(__dirname + '/emails/alert.pug')
   const data = {
-    from: 'Neri Junior <neri@nerijunior.com>',
-    to: 'neri@nerijunior.com',
-    subject: 'Teste',
-    text: 'Testando NODE JS',
-    html: '<h1>Teste HTML</h1>'
+    from: 'Não responder <nao-responder@adote-um-bueiro.herokuapps.com>',
+    to: manhole.user.email,
+    subject: `${manhole.name} precisa do seu cuidado!`,
+    html: template({
+      manhole,
+      days: DAYS_INTERVAL
+    })
   }
 
   return mg.messages.create(process.env.MAILGUN_DOMAIN, data)
