@@ -37,6 +37,7 @@ function saveAllAlerts(alerts) {
         Manhole.update({ _id: { $in : ids } }, { $set: { last_alert: new Date } }, (err, result) => {
           if (err) throw err
           console.log(result)
+          process.exit()
         })
       })
       .catch(error => {
