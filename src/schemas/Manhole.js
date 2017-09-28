@@ -9,6 +9,10 @@ module.exports = mongoose.model('Manhole', new Schema({
     type: [Number],
     index: '2d'
   },
+  created_at: {
+    type: Date,
+    default: Date.now
+  },
   last_alert: Date,
-  user: Object
+  user: Object,
 }))
