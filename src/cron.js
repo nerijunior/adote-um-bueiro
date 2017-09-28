@@ -15,9 +15,14 @@ const Manhole = require('./schemas/Manhole')
 const ManholeRepository = require('./repositories/ManholeRepository')
 const DAYS_INTERVAL = process.env.MAIL_ALERT_INTERVAL || 30
 
-
-function sendAlert(manhole) {
+/**
+ * Send an email to user that adopted the manhole
+ * @param  Manhole manhole Manhole Schema
+ * @return Promise
+ */
+function sendEmail(manhole) {
   let template = pug.compileFile(__dirname + '/emails/alert.pug')
+
   const data = {
     from: 'Não responder <nao-responder@adote-um-bueiro.herokuapps.com>',
     to: manhole.user.email,
@@ -31,8 +36,13 @@ function sendAlert(manhole) {
   return mg.messages.create(process.env.MAILGUN_DOMAIN, data)
 }
 
-function saveAllAlerts(alerts) {
-  Promise.all(alerts)
+/**
+ * Update Manholes after the email to avoid email duplicates
+ * @param  Array of Promises alerts
+ * @return void
+ */
+function updateManholes(emails) {
+  Promise.all(emails)
       .then(ids => {
         Manhole.update({ _id: { $in : ids } }, { $set: { last_alert: new Date } }, (err, result) => {
           if (err) throw err
@@ -42,34 +52,42 @@ function saveAllAlerts(alerts) {
       })
       .catch(error => {
         console.error(error)
+        process.exit()
       })
 }
 
+// Select every adopted manhole
 ManholeRepository.getAdopted()
   .then(manholes => {
 
-    let alerts = []
+    let emails = []
 
     manholes.map((manhole) => {
+      const createdAt = moment(manhole.created_at)
+      const fewDaysAgo = moment().subtract(DAYS_INTERVAL, 'day')
+
+      // Check if the manholes was created recently
+      if (createdAt > fewDaysAgo) {
+        return console.log(manhole._id, 'rejected - created_at')
+      }
+
       // Check the last alert sent
-
-      let fewDaysAgo = moment().subtract(DAYS_INTERVAL, 'day')
-
       if (manhole.last_alert) {
         let lastAlert = moment(manhole.last_alert)
 
         if (lastAlert <= fewDaysAgo) {
-          return console.log(manhole._id, 'rejected')
+          return console.log(manhole._id, 'rejected - last_alert')
         }
       }
 
-      const promise = sendAlert(manhole)
+      // Create the promise
+      const promise = sendEmail(manhole)
         .then(() => {
           return manhole._id
         })
 
-      alerts.push(promise)
+      emails.push(promise)
     })
 
-    saveAllAlerts(alerts)
+    updateManholes(emails)
   })
