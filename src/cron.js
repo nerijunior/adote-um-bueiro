@@ -1,17 +1,17 @@
 const path = require('path')
+const moment = require('moment')
+
 require('dotenv').config({ path: path.dirname(__dirname) + '/.env' })
 
-const moment = require('moment')
 const db = require('./core/db')
-const Manhole = require('./schemas/Manhole')
 const mailgun = require('mailgun.js')
 const mg = mailgun.client({
   username: 'api',
   key: process.env.MAILGUN_KEY,
 })
 
+const Manhole = require('./schemas/Manhole')
 const ManholeRepository = require('./repositories/ManholeRepository')
-
 const DAYS_INTERVAL = process.env.MAIL_ALERT_INTERVAL || 30
 
 function sendAlert(manhole) {
@@ -29,38 +29,31 @@ function sendAlert(manhole) {
 function saveAllAlerts(alerts) {
   Promise.all(alerts)
       .then(ids => {
-
-        ids.map((id) => {
-          Manhole.findById(id, function(err, manhole){
-            if (err) throw err
-
-            console.log('manhole:', manhole)
-          })
+        Manhole.update({ _id: { $in : ids } }, { $set: { last_alert: new Date } }, (err, result) => {
+          if (err) throw err
+          console.log(result)
         })
       })
       .catch(error => {
         console.error(error)
-      })
-      .then(() => {
-        process.exit()
       })
 }
 
 ManholeRepository.getAdopted()
   .then(manholes => {
 
-    alerts = []
+    let alerts = []
 
     manholes.map((manhole) => {
       // Check the last alert sent
-      let now = moment()
+
       let fewDaysAgo = moment().subtract(DAYS_INTERVAL, 'day')
 
       if (manhole.last_alert) {
         let lastAlert = moment(manhole.last_alert)
 
-        if (lastAlert >= tenDaysAgo) {
-          return
+        if (lastAlert <= fewDaysAgo) {
+          return console.log(manhole._id, 'rejected')
         }
       }
 
