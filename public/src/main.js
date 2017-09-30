@@ -10,7 +10,7 @@ import axios from 'axios'
 import sweetalert from 'sweetalert'
 
 const client = axios.create({
-  baseURL: '/api/',
+  baseURL: 'http://localhost:3000/api/',
   responseType: 'json'
 })
 

@@ -31,6 +31,7 @@
         :clickable="true"
         :draggable="false"
         @click="showMarkerInfo(m, index)"
+        :icon="makeIcon(m)"
       ></gmap-marker>
     </gmap-map>
 
@@ -49,6 +50,8 @@ import CreateModal from '@/components/CreateModal'
 import ToolBar from '@/components/ToolBar'
 import UserToolbar from '@/components/UserToolbar'
 
+// const now = window.moment()
+
 export default {
   components: {
     CreateModal,
@@ -61,6 +64,11 @@ export default {
       selectedMarker: null,
       creating: false,
       map: {
+        icons: {
+          normal: '/static/marker-abandoned.png',
+          success: '/static/marker-adopted.png',
+          warning: '/static/marker-warning.png'
+        },
         infoOptions: {
           pixelOffset: {
             width: 0,
@@ -83,6 +91,17 @@ export default {
     }
   },
   methods: {
+    makeIcon (manhole) {
+      if (manhole.adopted) {
+        if (manhole.last_update) {
+          return this.map.icons.success
+        } else {
+          return this.map.icons.warning
+        }
+      } else {
+        return this.map.icons.normal
+      }
+    },
     loadCenter () {
       this.map.center.lat = this.$store.state.lat
       this.map.center.lng = this.$store.state.lng
