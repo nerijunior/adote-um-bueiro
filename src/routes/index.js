@@ -8,7 +8,7 @@ module.exports = function (express) {
   express.post('/api/signin', require('./login'))
   express.post('/api/signup', require('./signup'))
 
-  express.post('/api/points', authenticated, require('./points'))
+  express.post('/api/points', require('./points'))
   express.get('/api/me', authenticated, MeController.see)
   express.put('/api/me', authenticated, MeController.update)
 

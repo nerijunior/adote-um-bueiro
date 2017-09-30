@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken')
 
 const UserRepository = require('../repositories/UserRepository')
-const config = require('../../config')
+const config = require('../config')
 
 class MeController {
   see (req, res) {

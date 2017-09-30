@@ -9,7 +9,7 @@ const bodyParser = require('body-parser')
 
 require('dotenv').config({ path: path.dirname(__dirname) + '/.env' })
 
-const config = require('../config')
+const config = require('./config')
 const db = require('./core/db')
 
 const app = express()

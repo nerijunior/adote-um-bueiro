@@ -1,6 +1,6 @@
 const User = require('../schemas/User')
 const jwt = require('jsonwebtoken')
-const config = require('../../config')
+const config = require('../config')
 const bcrypt = require('bcrypt')
 
 module.exports = function (req, res) {
