@@ -54,7 +54,7 @@ app.use(Raven.errorHandler())
 app.use(function(err, req, res, next) {
   console.error(err.stack)
   res.statusCode = 500
-  res..send('Something broke! Error code: ' + res.sentry)
+  res.send('Something broke! Error code: ' + res.sentry)
 })
 
 const server = http.createServer(app).listen(PORT, () => {
