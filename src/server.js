@@ -13,7 +13,7 @@ const Raven = require('raven')
 const config = require('./config')
 const db = require('./core/db')
 
-Raven.config('__DSN__').install()
+Raven.config(process.env.SENTRY_DSN).install()
 
 const app = express()
 
