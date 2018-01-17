@@ -8,6 +8,7 @@ const cors = require('cors')
 const bodyParser = require('body-parser')
 
 require('dotenv').config({ path: path.dirname(__dirname) + '/.env' })
+require('newrelic')
 
 const config = require('./config')
 const db = require('./core/db')
