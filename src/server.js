@@ -38,10 +38,6 @@ require('./routes')(app)
 
 app.use(express.static(path.dirname(__dirname) + '/public/dist'))
 
-app.get('/test', function(req, res){
-  throw new Error('Teste!')
-})
-
 // 404
 app.use('*', (req, res) => {
   res.status(404).send('Not found')
