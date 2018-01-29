@@ -18,6 +18,7 @@
           <div class="field">
             <label for="name" class="label">Nome</label>
             <input type="text" v-model="name" class="input" :class="{ 'is-danger' : ($v.name.$error) }">
+            <p class="help is-danger" v-show="$v.name.$error && !$v.name.$required">Nome é obrigatório</p>
           </div>
           <!-- /.field -->
 
@@ -33,6 +34,7 @@
               <div class="field">
                 <label for="password" class="label">Senha</label>
                 <input type="password" v-model="password" class="input" :class="{ 'is-danger' : ($v.password.$error) }">
+                <p class="help is-danger" v-show="$v.password.$error && !$v.password.$required">Senha é obrigatório</p>
               </div>
             </div>
 
@@ -40,6 +42,8 @@
               <div class="field">
                 <label for="" class="label">Confirmar Senha</label>
                 <input type="password" v-model="password_confirmation" class="input" :class="{ 'is-danger' : ($v.password_confirmation.$error) }">
+                <p class="help is-danger" v-show="($v.password_confirmation.$error && !$v.password_confirmation.required)">Confirmar Senha é obrigatório</p>
+                <p class="help is-danger" v-show="$v.password_confirmation.$error && !$v.password_confirmation.$sameAsPassword">As senhas não são idênticas</p>
               </div>
             </div>
           </div>
@@ -51,7 +55,7 @@
               <span>Registrar</span>
             </button>
 
-            <button class="button is-link">Voltar</button>
+            <router-link to="/" tag="button" class="button is-link">Voltar</router-link>
           </div>
         </form>
       </div>
@@ -60,7 +64,7 @@
 </template>
 
 <script>
-import { required, email } from 'vuelidate/lib/validators'
+import { required, email, sameAs } from 'vuelidate/lib/validators'
 import { getErrors } from '@/api/helpers'
 
 export default {
@@ -68,7 +72,10 @@ export default {
     name: { required },
     email: { required, email },
     password: { required },
-    password_confirmation: { required }
+    password_confirmation: {
+      required,
+      sameAsPassword: sameAs('password')
+    }
   },
   data () {
     return {
@@ -91,6 +98,8 @@ export default {
         password: this.password
       }
 
+      this.$store.commit('LOADING', true)
+
       window.axios.post('/signup', data)
         .then(response => {
           const user = response.data.user
@@ -111,6 +120,7 @@ export default {
             console.error(error)
           }
         })
+        .then(() => this.$store.commit('LOADING', false))
     }
   }
 }

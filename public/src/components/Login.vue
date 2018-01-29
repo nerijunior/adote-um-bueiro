@@ -58,7 +58,7 @@
 
 <script>
 export default {
-  name: 'hello',
+  name: 'login',
   data () {
     return {
       email: '',
@@ -103,10 +103,9 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .is-github{ background-color: #2b2b2b; color: white; }
 .is-google{ background-color: #dd4b39; color: white;  }
 .is-facebook{ background-color: #3b5998; color: white;  }
 .is-twitter{ background-color: #55acee; color: white;  }
-
 </style>
