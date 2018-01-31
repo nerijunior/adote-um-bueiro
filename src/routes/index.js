@@ -7,6 +7,7 @@ const ManholeController = require('../controllers/ManholeController')
 module.exports = function (express) {
   express.post('/api/signin', require('./login'))
   express.post('/api/signup', require('./signup'))
+  express.post('/api/forgot', require('./forgot'))
 
   express.post('/api/points', require('./points'))
   express.get('/api/me', authenticated, MeController.see)
