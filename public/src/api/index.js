@@ -46,11 +46,11 @@ class Api {
 
   login (data) {
     return this.client.post('/signin', data)
-      .then(response => {
-        this.authenticate(response.data.token)
+    .then(response => {
+      this.authenticate(response.data.token)
 
-        return Promise.resolve(response)
-      })
+      return Promise.resolve(response)
+    })
   }
 
   forgot (data) {
@@ -65,6 +65,10 @@ class Api {
     return this.client.post('/points', data)
   }
 
+  manholeCreate (data) {
+    return this.client.post('/manholes/', data)
+  }
+
   manholeAdopt (id) {
     return this.client.post('/manholes/adopt/', { id })
   }
@@ -76,7 +80,6 @@ class Api {
   manholeTakeCare (data) {
     return this.client.post('/manholes/take_care', data)
   }
-
 }
 
 export default new Api()

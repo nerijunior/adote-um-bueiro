@@ -12,22 +12,37 @@
         </div>
 
         <div class="field">
-          <label for="center" class="label">Selecione onde está o bueiro</label>
-          <gmap-map
-            :options="map.options"
-            :center="mapCenter"
-            :zoom="map.zoom"
-            map-type-id="roadmap"
-            @center_changed="center => map.center = center"
-            style="width: 100%; height: 200px"
-          >
-            <gmap-marker
-              :position="map.center"
-              :clickable="true"
-              :draggable="false"
-              @click="showMarkerInfo(m, index)"
-            ></gmap-marker>
-          </gmap-map>
+          <label for="center" class="label">Procure o Bueiro por endereço</label>
+        </div>
+
+        <div class="field has-addons">
+          <div class="control is-expanded" :class="{ 'is-loading': fetchingAddress }">
+            <input type="text" v-model="address" :disabled="fetchingAddress" class="input" :class="{ 'is-danger' : ($v.name.$error) }">
+          </div>
+          <div class="control">
+            <button type="button" :disabled="fetchingAddress" class="button is-info" @click="fetchAddress"><i class="fa fa-map-marker"></i></button>
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="label">Ajuste onde está o bueiro</label>
+          <div class="control control__map">
+            <gmap-map
+              :options="map.options"
+              :center="mapCenter"
+              :zoom="map.zoom"
+              map-type-id="roadmap"
+              @center_changed="center => map.center = center"
+              style="width: 100%; height: 200px"
+            >
+              <gmap-marker
+                :position="map.center"
+                :clickable="true"
+                :draggable="false"
+                @click="showMarkerInfo(m, index)"
+              ></gmap-marker>
+            </gmap-map>
+          </div>
         </div>
 
       </form>
@@ -45,6 +60,7 @@
 <script>
 import { required } from 'vuelidate/lib/validators'
 
+import Api from '@/api'
 import Modal from '@/components/Modal'
 
 export default {
@@ -55,16 +71,18 @@ export default {
   computed: {
     mapCenter () {
       return {
-        lat: this.$store.state.lat,
-        lng: this.$store.state.lng
+        lat: this.map.center.lat,
+        lng: this.map.center.lng
       }
     }
   },
   data () {
     return {
+      fetchingAddress: false,
       name: '',
+      address: '',
       map: {
-        zoom: 16,
+        zoom: 17,
         center: {
           lat: 0,
           lng: 0
@@ -94,7 +112,7 @@ export default {
         location: [lat, lng]
       }
 
-      window.axios.post('/manhole/', data)
+      Api.manholeCreate(data)
         .then(response => {
           this.$emit('created', response.data)
           this.$emit('close')
@@ -108,6 +126,23 @@ export default {
         .catch(error => {
           console.error(error)
         })
+    },
+    fetchAddress () {
+      const vue = this
+      const geocoder = new window.google.maps.Geocoder()
+
+      this.fetchingAddress = true
+
+      geocoder.geocode({address: this.address}, function (results, status) {
+        vue.fetchingAddress = false
+
+        if (status !== 'OK') {
+          return false
+        }
+
+        vue.map.center.lat = results[0].geometry.location.lat()
+        vue.map.center.lng = results[0].geometry.location.lng()
+      })
     }
   },
   mounted () {
@@ -120,4 +155,7 @@ export default {
 </script>
 
 <style scoped>
+.control__map{
+  margin-top: 10px;
+}
 </style>

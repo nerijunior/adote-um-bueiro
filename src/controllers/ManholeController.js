@@ -42,7 +42,8 @@ class ManholeController {
     const data = {
       name: req.body.name,
       location: req.body.location,
-      adopted: false
+      adopted: false,
+      log: []
     }
 
     ManholeRepository.save(data)

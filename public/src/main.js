@@ -5,6 +5,7 @@ import Vuelidate from 'vuelidate'
 import App from './App'
 import * as VueGoogleMaps from 'vue2-google-maps'
 import router from './router'
+import Config from './config'
 
 import sweetalert from 'sweetalert'
 window.swal = sweetalert
@@ -13,7 +14,7 @@ Vue.config.productionTip = false
 
 Vue.use(VueGoogleMaps, {
   load: {
-    key: 'AIzaSyAag4aIt0PMGqYjJSkY00PSfPS2opfMt54'
+    key: Config.mapApiKey
   }
 })
 
