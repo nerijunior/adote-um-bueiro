@@ -22,7 +22,7 @@
         </button>
       </div>
       <div class="field">
-        <button @click="takeCare" :disabled="!loggedUser._id" v-if="manhole.adopted" class="button is-fullwidth is-success">
+        <button @click="takeCare" :disabled="!loggedUser._id || manhole.user_id !== loggedUser._id" v-if="manhole.adopted" class="button is-fullwidth is-success">
           <span class="icon"><i class="fa fa-check-circle"></i></span>
           <span>Cuidar</span>
         </button>
