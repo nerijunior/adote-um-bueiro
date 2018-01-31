@@ -1,9 +1,9 @@
 <template>
-  <div id="toolbar">
+  <div v-if="loggedUser.name" id="toolbar">
     <div class="field">
       <button @click="create" class="button is-fullwidth is-info">
         <span class="icon"><i class="fa fa-plus-circle"></i> </span>
-        <span>Criar</span>
+        <span>Criar Bueiro</span>
       </button>
     </div>
 

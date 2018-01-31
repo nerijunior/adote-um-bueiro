@@ -11,12 +11,14 @@
           <form @submit.prevent="login">
             <div class="field">
               <label for="email" class="label">Email</label>
-              <input type="email" v-model="email" class="input">
+              <input type="email" v-model="email" class="input" :class="{ 'is-danger' : ($v.email.$error) }">
+              <p class="help is-danger" v-show="$v.email.$error && !$v.email.$email">Email inválido</p>
             </div>
 
             <div class="field">
               <label for="password" class="label">Password</label>
-              <input type="password" v-model="password" class="input">
+              <input type="password" v-model="password" class="input" :class="{ 'is-danger' : ($v.password.$error) }">
+              <p class="help is-danger" v-show="$v.password.$error && !$v.password.$required">Senha é obrigatório</p>
             </div>
 
             <div class="field is-grouped">
@@ -24,7 +26,7 @@
                 <button type="submit" class="button is-primary">Entrar</button>
               </div>
               <div class="control">
-                <router-link to="logout" class="button is-link">Esqueceu sua senha?</router-link>
+                <router-link to="forgot" class="button is-link">Esqueceu sua senha?</router-link>
               </div>
             </div>
 
@@ -57,8 +59,15 @@
 </template>
 
 <script>
+import Api from '@/api'
+import { required, email } from 'vuelidate/lib/validators'
+
 export default {
   name: 'login',
+  validations: {
+    email: { required, email },
+    password: { required }
+  },
   data () {
     return {
       email: '',
@@ -73,12 +82,16 @@ export default {
   },
   methods: {
     login () {
+      if (this.$v.$invalid) {
+        return this.$v.$touch()
+      }
+
       const data = {
         email: this.email,
         password: this.password
       }
 
-      window.axios.post('/signin', data)
+      Api.login(data)
         .then(response => {
           const user = response.data.user
           const token = response.data.token

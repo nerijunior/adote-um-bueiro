@@ -6,15 +6,7 @@ import App from './App'
 import * as VueGoogleMaps from 'vue2-google-maps'
 import router from './router'
 
-import axios from 'axios'
 import sweetalert from 'sweetalert'
-
-const client = axios.create({
-  baseURL: '/api/',
-  responseType: 'json'
-})
-
-window.axios = client
 window.swal = sweetalert
 
 Vue.config.productionTip = false

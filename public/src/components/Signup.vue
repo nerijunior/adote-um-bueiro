@@ -18,7 +18,7 @@
           <div class="field">
             <label for="name" class="label">Nome</label>
             <input type="text" v-model="name" class="input" :class="{ 'is-danger' : ($v.name.$error) }">
-            <p class="help is-danger" v-show="$v.name.$error && !$v.name.$required">Nome é obrigatório</p>
+            <p class="help is-danger" v-show="$v.name.$error && !$v.name.required">Nome é obrigatório</p>
           </div>
           <!-- /.field -->
 
@@ -42,6 +42,7 @@
               <div class="field">
                 <label for="" class="label">Confirmar Senha</label>
                 <input type="password" v-model="password_confirmation" class="input" :class="{ 'is-danger' : ($v.password_confirmation.$error) }">
+
                 <p class="help is-danger" v-show="($v.password_confirmation.$error && !$v.password_confirmation.required)">Confirmar Senha é obrigatório</p>
                 <p class="help is-danger" v-show="$v.password_confirmation.$error && !$v.password_confirmation.$sameAsPassword">As senhas não são idênticas</p>
               </div>
@@ -50,12 +51,12 @@
           <!-- /.columns -->
 
           <div class="field is-grouped">
-            <button class="button is-success">
+            <router-link to="/" tag="button" type="button" class="button is-link">Voltar</router-link>
+
+            <button type="submit" class="button is-success">
               <span class="icon"><i class="fa fa-rocket"></i></span>
               <span>Registrar</span>
             </button>
-
-            <router-link to="/" tag="button" class="button is-link">Voltar</router-link>
           </div>
         </form>
       </div>
@@ -65,6 +66,8 @@
 
 <script>
 import { required, email, sameAs } from 'vuelidate/lib/validators'
+
+import Api from '@/api'
 import { getErrors } from '@/api/helpers'
 
 export default {
@@ -100,13 +103,9 @@ export default {
 
       this.$store.commit('LOADING', true)
 
-      window.axios.post('/signup', data)
+      Api.signup(data, true)
         .then(response => {
           const user = response.data.user
-          const token = response.data.token
-
-          window.localStorage.setItem('token', token)
-          window.axios.defaults.headers.common['Authorization'] = 'Bearer ' + token
 
           this.$store.commit('SET_USER', user)
           this.$router.push('/')

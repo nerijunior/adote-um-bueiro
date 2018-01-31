@@ -20,6 +20,7 @@
     "style-loader": "^0.18.2",
     "sweetalert": "^2.0.3",
     "vue": "^2.4.2",
+    "vue-recaptcha": "^1.1.0",
     "vue-router": "^2.7.0",
     "vue-spinner": "^1.0.2",
     "vue2-google-maps": "^0.8.3",

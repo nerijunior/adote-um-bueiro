@@ -5,7 +5,12 @@
       @new-manhole="creating = true"
       :manhole="selectedManhole">
     </tool-bar>
+
     <user-toolbar></user-toolbar>
+
+    <transition name="fade">
+      <Loader v-if="loading"></Loader>
+    </transition>
 
     <gmap-map
       :center="map.center"
@@ -44,6 +49,8 @@
 </template>
 
 <script>
+import Api from '@/api'
+import Loader from '@/components/Loader'
 import { debounce, extend } from 'lodash'
 
 import CreateModal from '@/components/CreateModal'
@@ -54,6 +61,7 @@ import UserToolbar from '@/components/UserToolbar'
 
 export default {
   components: {
+    Loader,
     CreateModal,
     ToolBar,
     UserToolbar
@@ -63,6 +71,7 @@ export default {
       selectedManhole: {},
       selectedMarker: null,
       creating: false,
+      loading: false,
       map: {
         icons: {
           normal: '/static/marker-abandoned.png',
@@ -119,7 +128,7 @@ export default {
       }
     }, 300),
     fetchManholes (lat, lng) {
-      window.axios.post('/points/', {lat: lat, lng: lng})
+      Api.getManholes({lat: lat, lng: lng})
         .then(response => {
           const manholes = response.data.manholes
           const manholesIds = this.map.markers.map((point) => {
@@ -185,8 +194,12 @@ export default {
     }
   },
   mounted () {
-    window.vm = this
+    const vue = this
     this.loadCenter()
+
+    if (navigator.geolocation) {
+      vue.loading = true
+    }
 
     navigator.geolocation.getCurrentPosition((location) => {
       const data = {
@@ -195,6 +208,7 @@ export default {
       }
 
       this.$store.commit('SET_LOCATION', data)
+      vue.loading = false
 
       this.map.zoom = 14
       this.loadCenter()
@@ -209,5 +223,11 @@ export default {
 <style scoped>
 #mainmap{
   height: 100%;
+}
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .5s ease-out;
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+  opacity: 0;
 }
 </style>

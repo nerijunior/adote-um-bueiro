@@ -7,7 +7,7 @@
       </div>
     </section>
 
-    <form @submit.prevet="save">
+    <form @submit.prevent="save">
       <div v-if="errors.length" class="notification is-danger">
         <ul>
           <li v-for="error in errors"><small>{{ error.field }}</small> {{ error.message }}</li>
@@ -22,6 +22,7 @@
           <div class="field">
             <p class="control">
               <input type="text" v-model="user.name" class="input" :class="{ 'is-danger' : ($v.user.name.$error) }">
+              <p class="help is-danger" v-show="$v.user.name.$error && !$v.user.name.required">Nome é obrigatório</p>
             </p>
           </div>
         </div>
@@ -36,6 +37,8 @@
           <div class="field">
             <p class="control">
               <input type="text" v-model="user.email" class="input" :class="{ 'is-danger' : ($v.user.email.$error) }">
+              <p class="help is-danger" v-show="$v.user.email.$error && !$v.user.email.required">Email é obrigatório</p>
+              <p class="help is-danger" v-show="$v.user.email.$error && !$v.user.email.$email">Email inválido</p>
             </p>
           </div>
         </div>
@@ -49,12 +52,12 @@
         <div class="field-body">
           <div class="field">
             <p class="control">
-              <input type="password" v-model="user.password" class="input">
+              <input type="password" @input="$v.user.password_confirmation.$touch()" v-model="user.password" class="input">
             </p>
           </div>
           <div class="field">
             <p class="control">
-              <input type="password" v-model="user.password_confirmation" class="input">
+              <input type="password" @input="$v.user.password_confirmation.$touch()" v-model="user.password_confirmation" class="input">
             </p>
           </div>
         </div>
@@ -66,13 +69,14 @@
         <div class="field-body">
           <div class="field is-grouped">
             <div class="control">
+              <router-link to="/" class="button is-link">Voltar</router-link>
+            </div>
+
+            <div class="control">
               <button class="button is-success">
                 <span class="icon"><i class="fa fa-rocket"></i></span>
-                <span>Registrar</span>
+                <span>Salvar Alterações</span>
               </button>
-            </div>
-            <div class="control">
-              <router-link to="/" class="button is-link">Voltar</router-link>
             </div>
           </div>
         </div>
@@ -82,29 +86,33 @@
 </template>
 
 <script>
+import Api from '@/api'
 import { required, email } from 'vuelidate/lib/validators'
+// import { clone } from 'lodash'
 
 export default {
+  props: ['userData'],
   validations: {
     user: {
       name: { required },
       email: { required, email }
     }
   },
-  computed: {
-    user () {
-      return this.$store.getters.user
-    }
-  },
   data () {
     return {
-      errors: []
+      errors: [],
+      user: {}
     }
+  },
+  mounted () {
+    this.user = this.userData
   },
   methods: {
     save () {
-      if (this.$v.$invalid) {
-        return this.$v.$touch()
+      this.$v.user.$touch()
+
+      if (this.$v.user.$invalid) {
+        return false
       }
 
       let data = {
@@ -119,9 +127,9 @@ export default {
 
       this.$store.commit('LOADING', true)
 
-      window.axios.put('/me', data)
+      Api.updateProfile(data)
         .then(response => {
-          this.$store.commit('SET_USER', response.data)
+          this.$store.commit('SET_USER', response.data.user)
         })
         .catch(error => {
           console.error(error)

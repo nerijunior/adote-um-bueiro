@@ -4,8 +4,9 @@ import VueRouter from 'vue-router'
 // Components
 import MainMap from '@/components/MainMap'
 import Login from '@/components/Login'
+import Forgot from '@/components/Auth/Forgot'
 import Signup from '@/components/Signup'
-import Profile from '@/components/Profile'
+import ProfilePage from '@/components/ProfilePage'
 
 Vue.use(VueRouter)
 
@@ -31,8 +32,14 @@ let Router = new VueRouter({
     {
       path: '/profile',
       name: 'Profile',
-      component: Profile,
+      component: ProfilePage,
       meta: { authenticated: true }
+    },
+    {
+      path: '/forgot',
+      name: 'Forgot',
+      component: Forgot,
+      meta: { authenticated: 'guest' }
     }
   ]
 })

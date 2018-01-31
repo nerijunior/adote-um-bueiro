@@ -7,6 +7,7 @@
 
 <script>
 import Loader from '@/components/Loader'
+import Api from '@/api'
 
 export default {
   name: 'app',
@@ -22,7 +23,7 @@ export default {
     getUserProfile () {
       this.$store.commit('LOADING', true)
 
-      window.axios.get('/me')
+      Api.userProfile()
         .then(response => {
           this.$store.commit('SET_USER', response.data)
         })
@@ -38,7 +39,7 @@ export default {
     const token = window.localStorage.getItem('token')
 
     if (token) {
-      window.axios.defaults.headers.common['Authorization'] = 'Bearer ' + token
+      Api.authenticate(token)
       this.getUserProfile()
     }
   }
