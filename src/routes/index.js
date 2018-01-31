@@ -20,4 +20,6 @@ module.exports = function (express) {
   express.post('/api/manhole/:id/abandon', authenticated, ManholeController.abandon)
   express.post('/api/manhole/:id/adopt', authenticated, ManholeController.adopt)
   express.post('/api/manhole/', authenticated, ManholeController.create)
+
+  require('./manholes')(express)
 }

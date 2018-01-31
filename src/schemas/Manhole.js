@@ -14,5 +14,7 @@ module.exports = mongoose.model('Manhole', new Schema({
     default: Date.now
   },
   last_alert: Date,
+  last_update: String,
   user: Object,
+  log: Array
 }))
