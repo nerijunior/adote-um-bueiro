@@ -2,6 +2,7 @@
   <div id="mainmap">
     <tool-bar
       @updatedManhole="updatedManhole"
+      @manholeTakeCare="takingCare = true"
       @new-manhole="creating = true"
       :manhole="selectedManhole">
     </tool-bar>
@@ -9,7 +10,7 @@
     <user-toolbar></user-toolbar>
 
     <transition name="fade">
-      <Loader v-if="loading"></Loader>
+      <MapMarkerLoader v-if="loading"></MapMarkerLoader>
     </transition>
 
     <gmap-map
@@ -45,32 +46,36 @@
         <form @submit.prevent="newManhole"></form>
       </div>
     </create-modal>
+
+    <take-care-modal v-if="takingCare" :manhole="selectedManhole" @close="takingCare = false"></take-care-modal>
   </div>
 </template>
 
 <script>
 import Api from '@/api'
-import Loader from '@/components/Loader'
+import MapMarkerLoader from '@/components/UI/MapMarkerLoader'
 import { debounce, extend } from 'lodash'
 
-import CreateModal from '@/components/CreateModal'
 import ToolBar from '@/components/ToolBar'
 import UserToolbar from '@/components/UserToolbar'
-
+import CreateModal from '@/components/CreateModal'
+import TakeCareModal from '@/components/TakeCareModal'
 // const now = window.moment()
 
 export default {
   components: {
-    Loader,
-    CreateModal,
+    MapMarkerLoader,
     ToolBar,
-    UserToolbar
+    UserToolbar,
+    CreateModal,
+    TakeCareModal
   },
   data () {
     return {
       selectedManhole: {},
       selectedMarker: null,
       creating: false,
+      takingCare: false,
       loading: false,
       map: {
         icons: {
@@ -149,10 +154,7 @@ export default {
     },
     addMarker (manhole) {
       this.map.markers.push({
-        _id: manhole._id,
-        name: manhole.name,
-        adopted: manhole.adopted,
-        user_id: manhole.user_id,
+        ...manhole,
         position: {lat: manhole.location[0], lng: manhole.location[1]}
       })
     },
@@ -197,9 +199,7 @@ export default {
     const vue = this
     this.loadCenter()
 
-    if (navigator.geolocation) {
-      vue.loading = true
-    }
+    vue.loading = true
 
     navigator.geolocation.getCurrentPosition((location) => {
       const data = {
@@ -215,6 +215,9 @@ export default {
       this.fetchManholes(data.lat, data.lng)
 
       console.log('accuracy', location.coords.accuracy)
+    }, error => {
+      console.log(error)
+      vue.loading = false
     })
   }
 }

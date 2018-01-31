@@ -65,6 +65,18 @@ class Api {
     return this.client.post('/points', data)
   }
 
+  manholeAdopt (id) {
+    return this.client.post('/manholes/adopt/', { id })
+  }
+
+  manholeAbandon (id) {
+    return this.client.post('/manholes/abandon', {id})
+  }
+
+  manholeTakeCare (data) {
+    return this.client.post('/manholes/take_care', data)
+  }
+
 }
 
 export default new Api()

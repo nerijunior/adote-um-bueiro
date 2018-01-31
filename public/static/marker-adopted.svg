@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="27px" height="27px" viewBox="0 0 27 27" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 48.2 (47327) - http://www.bohemiancoding.com/sketch -->
+    <title>Manhole Adopted</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Artboard" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(-239.000000, -152.000000)" stroke-linecap="square" stroke-linejoin="round">
+        <g id="Manhole-Adopted" transform="translate(239.000000, 152.000000)">
+            <g id="Manhole" transform="translate(2.000000, 2.000000)">
+                <circle id="Oval" stroke="#171717" stroke-width="3" fill="#7ED321" cx="11.5" cy="11.5" r="11.5"></circle>
+                <circle id="Oval-2" stroke="#000000" stroke-width="2" fill="#7ED321" cx="7.5" cy="9.5" r="2.5"></circle>
+                <circle id="Oval-2" stroke="#000000" stroke-width="2" fill="#7ED321" cx="15.5" cy="9.5" r="2.5"></circle>
+                <path d="M18,18.5 C16.6402004,16.5928344 14.0207822,15 11.5,15 C8.97202406,15 6.35869266,16.5835985 5,18.5" id="Oval-3" stroke="#000000" stroke-width="2" transform="translate(11.500000, 16.750000) rotate(-180.000000) translate(-11.500000, -16.750000) "></path>
+            </g>
+        </g>
+    </g>
+</svg>
