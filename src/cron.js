@@ -56,6 +56,8 @@ function updateManholes(emails) {
       })
 }
 
+return false;
+
 // Select every adopted manhole
 ManholeRepository.getAdopted()
   .then(manholes => {
